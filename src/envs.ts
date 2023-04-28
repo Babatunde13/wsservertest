@@ -1,6 +1,6 @@
-import { config } from "dotenv";
+import { config } from 'dotenv'
 
-config();
+config()
 
 const envs: { [key: string]: string | number | undefined } = {
     PORT: process.env.PORT || 3000,
@@ -29,28 +29,28 @@ const validateEnvs = (
 ) => {
     const missingEnvs = Object.entries(schema).filter(([key, value]) => {
         if (typeof value.default !== 'undefined') {
-            value = envs[key] || value.default;
+            value = envs[key] || value.default
         }
         if (value.type === 'number') {
             // try to convert to number
-            const num = Number(process.env[key]);
+            const num = Number(process.env[key])
             if (isNaN(num)) {
-                return true;
+                return true
             }
 
-            return false;
+            return false
         }
         if (value.required && !envs[key]) {
-            return true;
+            return true
         }
-        return false;
-    });
+        return false
+    })
 
     if (missingEnvs.length) {
-        throw new Error(`Missing env variables: ${missingEnvs.map(([key]) => key).join(', ')}`);
+        throw new Error(`Missing env variables: ${missingEnvs.map(([key]) => key).join(', ')}`)
     }
 }
 
-validateEnvs(schema, envs);
+validateEnvs(schema, envs)
 
-export default envs;
+export default envs
