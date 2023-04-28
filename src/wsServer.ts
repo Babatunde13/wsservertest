@@ -3,27 +3,27 @@ import { Server } from 'http'
 import io from 'socket.io'
 import userHandler from './wsHandlers/user.handler'
 import chatHandler from './wsHandlers/chat.handler'
-import { ICustomSocket, IEventPayload } from './types/ws.types'
-import { CustomError } from './utils/customError'
+import { IOSocket, IEventPayload } from './types/ws.types'
+import { ApiError } from './utils/ApiError'
 
-const getUserFromToken = async (socket: ICustomSocket) => {
+const getUserFromToken = async (socket: IOSocket) => {
     const token = socket.handshake.auth.token || socket.handshake.headers.authorization?.split(' ')[1]
     return { id: '123', name: 'test', token }
 }
 
-const authUserMiddleware = async (socket: io.Socket, next: (err?: CustomError) => void) => {
-    const user = await getUserFromToken((socket as ICustomSocket))
+const authUserMiddleware = async (socket: io.Socket, next: (err?: ApiError) => void) => {
+    const user = await getUserFromToken((socket as IOSocket))
     if (!user) {
-        const err = new CustomError('Unauthorized', 401)
+        const err = new ApiError('Unauthorized', 401)
         err.addMeta({ content: 'Please reconnect with a valid token' })
         next(err)
         return
     }
-    (socket as ICustomSocket).request.user = user
+    (socket as IOSocket).request.user = user
     next()
 }
 
-const wsConnection = (socket: ICustomSocket) => {
+const wsConnection = (socket: IOSocket) => {
     const id = socket.id
     console.log('Client connected: ', id)
     console.log(socket.connected, socket.id)
@@ -39,7 +39,7 @@ const wsConnection = (socket: ICustomSocket) => {
     })
 
     socket.on('join:channel', (payload: IEventPayload) => {
-        const channel = payload.channel
+        const channel: string = payload.channel
         // save channel to db for user
         socket.join(channel)
         socket.to(channel).emit('user:joined', { channel, user: socket.request.user })

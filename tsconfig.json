@@ -36,7 +36,6 @@
       "**/.git",
       "types",
       "dist",
-      "tmp",
       "logs"
   ]
 }

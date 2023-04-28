@@ -1,11 +1,11 @@
-import { ICustomSocket } from '../types/ws.types'
+import { IOSocket } from '../types/ws.types'
 import {
     sendMessageToUser,
     sendMessageToGroupChat,
     sendMessageToChannels,
 } from '../controllers/chat.controller'
 
-export default function chatHandler (socket: ICustomSocket) {
+export default function chatHandler (socket: IOSocket) {
     const user = socket.request.user
     console.log('User: ', user)
     if(!user) {

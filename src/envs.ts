@@ -2,12 +2,25 @@ import { config } from 'dotenv'
 
 config()
 
-const envs: { [key: string]: string | number | undefined } = {
+interface ISchema {
+    [key: string]: {
+        required: boolean,
+        type: 'string' | 'number' | 'object',
+        default?: string | number | object
+    }
+}
+
+interface IEnv {
+    [key: string]: string | number | object | undefined
+}
+
+const envs: IEnv = {
     PORT: process.env.PORT || 3000,
     MONGO_URI: process.env.MONGO_URI || 'mongodb://localhost:27017/',
     FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5001',
 }
-const schema = {
+
+const schema: ISchema = {
     PORT: {
         required: true,
         type: 'number',
@@ -23,13 +36,15 @@ const schema = {
     },
 }
 
+
+
 const validateEnvs = (
-    schema: { [key: string]: { required: boolean, type: any, default?: any } },
-    envs: { [key: string]: string | number | undefined }
+    schema: ISchema,
+    envs: IEnv
 ) => {
     const missingEnvs = Object.entries(schema).filter(([key, value]) => {
         if (typeof value.default !== 'undefined') {
-            value = envs[key] || value.default
+            envs[key] = envs[key] || value.default
         }
         if (value.type === 'number') {
             // try to convert to number

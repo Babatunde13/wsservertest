@@ -1,4 +1,4 @@
-import { ICustomSocket } from '../types/ws.types'
+import { IOSocket } from '../types/ws.types'
 import {
     createOrder,
     cancelOrder,
@@ -9,7 +9,7 @@ import {
     payOrder,
 } from '../controllers/order.controller'
 
-export default function userHandler (socket: ICustomSocket) {
+export default function userHandler (socket: IOSocket) {
     const user = socket.request.user
     if(!user) {
         socket.disconnect()
