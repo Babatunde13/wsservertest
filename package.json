@@ -9,8 +9,8 @@
     "build:watch": "./node_modules/.bin/tsc --project ./tsconfig.json -w",
     "start": "node ./dist/src/app.js",
     "dev": "./node_modules/.bin/nodemon ./dist/src/app.js",
-    "lint": "./node_modules/.bin/eslint . --ext .ts",
-    "lint:fix": "./node_modules/.bin/eslint . --ext .ts --fix",
+    "lint": "./node_modules/.bin/eslint .",
+    "lint:fix": "./node_modules/.bin/eslint . --fix",
     "prepare": "husky install"
   },
   "keywords": [],
