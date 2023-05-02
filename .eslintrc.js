@@ -21,5 +21,7 @@ module.exports = {
         quotes: ['error', 'single'],
         semi: ['error', 'never'],
         indent: ['error', 4],
+        '@typescript-eslint/no-empty-interface': 'off',
+        '@typescript-eslint/ban-types': 'off'
     },
 }

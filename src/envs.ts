@@ -14,17 +14,18 @@ interface IEnv {
     [key: string]: string | number | object | undefined
 }
 
-const envs: IEnv = {
+const envs = {
     PORT: process.env.PORT || 3000,
-    MONGO_URI: process.env.MONGO_URI || 'mongodb://localhost:27017/',
-    FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5001',
+    MONGO_URI: process.env.MONGO_URI || '',
+    FRONTEND_URL: process.env.FRONTEND_URL || '',
+    secret: process.env.SECRET || ''
 }
 
 const schema: ISchema = {
     PORT: {
         required: true,
         type: 'number',
-        default: 5000,
+        default: 5001,
     },
     MONGO_URI: {
         required: true,
@@ -34,6 +35,10 @@ const schema: ISchema = {
         required: true,
         type: 'string',
     },
+    secret: {
+        required: true,
+        type: 'string',
+    }
 }
 
 
@@ -48,7 +53,7 @@ const validateEnvs = (
         }
         if (value.type === 'number') {
             // try to convert to number
-            const num = Number(process.env[key])
+            const num = Number(envs[key])
             if (isNaN(num)) {
                 return true
             }

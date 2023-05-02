@@ -5,21 +5,26 @@ import userHandler from './wsHandlers/user.handler'
 import chatHandler from './wsHandlers/chat.handler'
 import { IOSocket, IEventPayload } from './types/ws.types'
 import { ApiError } from './utils/ApiError'
+import { verifyAuthTokens } from './utils/AuthModule'
 
 const getUserFromToken = async (socket: IOSocket) => {
     const token = socket.handshake.auth.token || socket.handshake.headers.authorization?.split(' ')[1]
-    return { id: '123', name: 'test', token }
+    const userData = await verifyAuthTokens(token)
+    if (!userData.data || userData.error) {
+        return { error: userData.error || new ApiError('Error fetching user data', 400) }
+    }
+    return userData
 }
 
 const authUserMiddleware = async (socket: io.Socket, next: (err?: ApiError) => void) => {
-    const user = await getUserFromToken((socket as IOSocket))
-    if (!user) {
+    const userData = await getUserFromToken((socket as IOSocket))
+    if (!userData.data || userData.error) {
         const err = new ApiError('Unauthorized', 401)
         err.addMeta({ content: 'Please reconnect with a valid token' })
         next(err)
         return
     }
-    (socket as IOSocket).request.user = user
+    (socket as IOSocket).request.user = userData.data
     next()
 }
 
@@ -27,7 +32,7 @@ const wsConnection = (socket: IOSocket) => {
     const id = socket.id
     console.log('Client connected: ', id)
     console.log(socket.connected, socket.id)
-    socket.join(socket.request.user.id)
+    socket.join(socket.request.user._id)
 
     socket.on('disconnect', (reason: string) => {
         console.log('disconnect', socket.connected, socket.id)
