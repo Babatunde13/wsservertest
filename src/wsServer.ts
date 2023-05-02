@@ -55,18 +55,16 @@ const wsConnection = (socket: IOSocket) => {
 }
 
 const createWebSocketServer = (server: Server) => {
-    const wsServer = new io.Server(server, {
+    const wss = new io.Server(server, {
         allowRequest: (req, callback) => {
             const origin = req.headers.origin
             callback(null, origin === process.env.FRONTEND_URL)
         }
     })
-    wsServer.engine.generateId = () => randomUUID()
-    wsServer.use(authUserMiddleware)
+    wss.engine.generateId = () => randomUUID()
+    wss.use(authUserMiddleware)
 
-    wsServer.on('connection', (socket: any) => wsConnection(socket))
-
-    return wsServer
+    wss.on('connection', (sock: any) => wsConnection(sock))
 }
 
 export default createWebSocketServer
