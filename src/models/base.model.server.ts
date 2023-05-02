@@ -13,7 +13,7 @@ interface QueryOptions {
     skip?: number
     sort?: SortOptions | string
     projection?: { [key: string]: number }
-    session: ClientSession
+    session?: ClientSession
 }
 
 interface UpdateOptions {
@@ -203,7 +203,7 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
     async updateOne(
         query: FindQuery<T>,
         update: UpdateManyUpdate<T>,
-        options?: UpdateOptions
+        options: UpdateOptions = { new: true }
     ): Promise<DataOrError<T | null>> {
         try {
             const doc = await this.model.findOneAndUpdate(query, update, options)
@@ -220,7 +220,7 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
     async updateMany(
         query: FindQuery<T>,
         update: UpdateManyUpdate<T>,
-        options?: UpdateOptions
+        options: UpdateOptions = {}
     ) {
         try {
             const docs = await this.model.updateMany(query, update, options)
@@ -236,7 +236,7 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
 
     async deleteOne(
         query: FindQuery<T>,
-        options: QueryOptions
+        options: QueryOptions = {}
     ): Promise<DataOrError<T | null>> {
         try {
             const doc = await this.model.findOneAndDelete(query, options)
@@ -253,7 +253,7 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
 
     async deleteMany(
         query: FindQuery<T>,
-        options: Omit<Omit<QueryOptions, 'projection'>, 'sort'>
+        options: Omit<Omit<QueryOptions, 'projection'>, 'sort'> = {}
     ) {
         try {
             const docs = await this.model.deleteMany(query, options)
@@ -306,5 +306,5 @@ export type UpdateManyUpdate<T = { [key: string]: any }> = {
     $set?: Partial<T>
     $push?: Partial<T>
     $inc?: Partial<T>
-    $max: Partial<T>
+    $max?: Partial<T>
 }

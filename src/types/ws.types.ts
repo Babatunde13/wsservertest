@@ -3,6 +3,7 @@ import { UserClient } from '../models/user.model.client'
 
 export type IOSocket = io.Socket & { request: io.Socket['request'] & { user: UserClient } };
 
-export interface IEventPayload {
+export type IEventPayload<T={}> = {
     [key: string]: any;
-}
+} & T
+

@@ -1,18 +1,17 @@
 import { IOSocket } from '../types/ws.types'
-import {
-    sendMessageToUser,
-    sendMessageToGroupChat,
-    sendMessageToChannels,
-} from '../controllers/chat.controller'
+import { deleteMessage, sendMessage, fetchChats, fetchMessages } from '../controllers/chat.controller'
+import { ApiError } from 'src/utils/ApiError'
 
 export default function chatHandler (socket: IOSocket) {
     const user = socket.request.user
-    console.log('User: ', user)
     if(!user) {
+        socket.emit('error', new ApiError('User not found'))
         socket.disconnect()
         return
     }
-    socket.on('message:user', (payload) => sendMessageToUser(socket, payload))
-    socket.on('message:group', (payload) => sendMessageToGroupChat(socket, payload))
-    socket.on('message:channels', (payload) => sendMessageToChannels(socket, payload))
+
+    socket.on('send:message', (payload) => sendMessage(socket, payload))
+    socket.on('delete:message', (payload) => deleteMessage(socket, payload))
+    socket.on('fetch:chats', () => fetchChats(socket))
+    socket.on('fetch:messages', (payload) => fetchMessages(socket, payload))
 }

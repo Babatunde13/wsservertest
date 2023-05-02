@@ -31,7 +31,6 @@ const authUserMiddleware = async (socket: io.Socket, next: (err?: ApiError) => v
 const wsConnection = (socket: IOSocket) => {
     const id = socket.id
     console.log('Client connected: ', id)
-    console.log(socket.connected, socket.id)
     socket.join(socket.request.user._id)
 
     socket.on('disconnect', (reason: string) => {
@@ -43,11 +42,18 @@ const wsConnection = (socket: IOSocket) => {
         console.log('Client error', id, err)
     })
 
-    socket.on('join:channel', (payload: IEventPayload) => {
-        const channel: string = payload.channel
+    socket.on('join:channel', (payload: IEventPayload<{ channel: string }>) => {
+        const channel = payload.channel
         // save channel to db for user
         socket.join(channel)
         socket.to(channel).emit('user:joined', { channel, user: socket.request.user })
+    })
+
+    socket.on('leave:channel', (payload: IEventPayload<{ channel: string }>) => {
+        const channel = payload.channel
+        // remove channel from db for user
+        socket.leave(channel)
+        socket.to(channel).emit('user:left', { channel, user: socket.request.user })
     })
 
     userHandler(socket) 
