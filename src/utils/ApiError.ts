@@ -1,11 +1,9 @@
 export class ApiError extends Error {
     data?: object
-    code?: number
     status: false
 
-    constructor(message: string, code?: number, data?: object) {
+    constructor(message: string, data?: object) {
         super(message)
-        this.code = code
         this.data = data
         this.status = false
     }

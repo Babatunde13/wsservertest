@@ -11,7 +11,7 @@ export const connectToDB = async (url: string) => {
     } catch(error) {
         console.log('Failed to connect to DB')
         return {
-            error: new ApiError('Failed to connect to DB', 400, (error as Error))
+            error: new ApiError('Failed to connect to DB', (error as Error))
         }
     }
 }

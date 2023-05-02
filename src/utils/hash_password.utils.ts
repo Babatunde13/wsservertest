@@ -7,7 +7,7 @@ export const hashPassword = async (password: string): Promise<DataOrError<string
         const hash = await bcrypt.hash(password, 10)
         return { data: hash }
     } catch (error) {
-        return { error: new ApiError('Error hashing password', 400, (error as Error)) }
+        return { error: new ApiError('Error hashing password', (error as Error)) }
     }
 }
 
@@ -16,6 +16,6 @@ export const verifyPassword = async (password: string, hash: string): Promise<Da
         const isValid = await bcrypt.compare(password, hash)
         return { data: isValid }
     } catch (error) {
-        return { error: new ApiError('Error verifying password', 400, (error as Error)) }
+        return { error: new ApiError('Error verifying password', (error as Error)) }
     }
 }

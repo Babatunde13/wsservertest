@@ -11,7 +11,7 @@ const getUserFromToken = async (socket: IOSocket) => {
     const token = socket.handshake.auth.token || socket.handshake.headers.authorization?.split(' ')[1]
     const userData = await verifyAuthTokens(token)
     if (!userData.data || userData.error) {
-        return { error: userData.error || new ApiError('Error fetching user data', 400) }
+        return { error: userData.error || new ApiError('Error fetching user data') }
     }
     return userData
 }
@@ -19,7 +19,7 @@ const getUserFromToken = async (socket: IOSocket) => {
 const authUserMiddleware = async (socket: io.Socket, next: (err?: ApiError) => void) => {
     const userData = await getUserFromToken((socket as IOSocket))
     if (!userData.data || userData.error) {
-        const err = new ApiError('Unauthorized', 401)
+        const err = new ApiError('Unauthorized')
         err.addMeta({ content: 'Please reconnect with a valid token' })
         next(err)
         return

@@ -95,7 +95,7 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
             }
         } catch (error) {
             return {
-                error: new ApiError('Error creating document', 400, (error as Error))
+                error: new ApiError('Error creating document', (error as Error))
             }
         }
     }
@@ -108,7 +108,7 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
             }
         } catch (error) {
             return {
-                error: new ApiError('Error creating and saving document', 400, (error as Error))
+                error: new ApiError('Error creating and saving document', (error as Error))
             }
         }
     }
@@ -137,7 +137,7 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
             }
         } catch (error) {
             return {
-                error: new ApiError('Error finding documents', 400, (error as Error))
+                error: new ApiError('Error finding documents', (error as Error))
             }
         }
     }
@@ -166,7 +166,7 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
             }
         } catch (error) {
             return {
-                error: new ApiError('Error finding document', 400, (error as Error))
+                error: new ApiError('Error finding document', (error as Error))
             }
         }
     }
@@ -195,7 +195,7 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
             }
         } catch (error) {
             return {
-                error: new ApiError('Error finding document', 400, (error as Error))
+                error: new ApiError('Error finding document', (error as Error))
             }
         }
     }
@@ -212,7 +212,7 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
             }
         } catch (error) {
             return {
-                error: new ApiError('Error updating document', 400, (error as Error))
+                error: new ApiError('Error updating document', (error as Error))
             }
         }
     }
@@ -229,7 +229,7 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
             }
         } catch (error) {
             return {
-                error: new ApiError('Error updating documents', 400, (error as Error))
+                error: new ApiError('Error updating documents', (error as Error))
             }
         }
     }
@@ -246,7 +246,7 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
             }
         } catch (error) {
             return {
-                error: new ApiError('Error deleting document', 400, (error as Error))
+                error: new ApiError('Error deleting document', (error as Error))
             }
         }
     }
@@ -262,7 +262,7 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
             }
         } catch (error) {
             return {
-                error: new ApiError('Error deleting documents', 400, (error as Error))
+                error: new ApiError('Error deleting documents', (error as Error))
             }
         }
     }
@@ -278,7 +278,7 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
             }
         } catch (error) {
             return {
-                error: new ApiError('Error counting documents', 400, (error as Error))
+                error: new ApiError('Error counting documents', (error as Error))
             }
         }
     }
@@ -293,7 +293,7 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
             }
         } catch (error) {
             return {
-                error: new ApiError('Error aggregating documents', 400, (error as Error))
+                error: new ApiError('Error aggregating documents', (error as Error))
             }
         }
     }

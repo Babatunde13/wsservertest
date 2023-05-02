@@ -1,6 +1,6 @@
 import { ApiError } from '../utils/ApiError'
 import { Role } from '../models/user.model.client'
-import { BaseReq } from './base_req.ctrl.contract'
+import { BaseReq, BaseRes } from './base_req.ctrl.contract'
 
 interface ClientReq {
     name: string
@@ -10,9 +10,25 @@ interface ClientReq {
     role: Role
 }
 
+interface ClientRes {
+    user: ClientReq
+    token: {
+        access: {
+            token: string
+            expires: Date
+        },
+        refresh: {
+            token: string
+            expires: Date
+        }
+    }
+}
+
 export interface Req extends BaseReq {
     body: ClientReq
 }
+
+export type Res = Promise<BaseRes<ClientRes>>
 
 export const validationSchema = (data: ClientReq) => {
     if (!data.email) {
