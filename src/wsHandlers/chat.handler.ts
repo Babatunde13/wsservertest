@@ -1,6 +1,6 @@
 import { IOSocket } from '../types/ws.types'
 import { deleteMessage, sendMessage, fetchChats, fetchMessages, readMessage, deliverMessage, updateMessage } from '../controllers/chat.controller'
-import { ApiError } from 'src/utils/ApiError'
+import { ApiError } from '../utils/ApiError'
 
 export default function chatHandler (socket: IOSocket) {
     const user = socket.request.user

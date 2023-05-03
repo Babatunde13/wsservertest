@@ -12,6 +12,11 @@ const chatModel = new BaseModel<IChat, ChatClient>({
             ref: 'User'
         }],
         isGroup: Boolean,
+        owner: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        picture: String,
     },
     toJSON(chat) {
         return {
@@ -19,6 +24,8 @@ const chatModel = new BaseModel<IChat, ChatClient>({
             name: chat.name,
             users: chat.users.map(user => user.toString()),
             isGroup: chat.isGroup,
+            owner: chat.owner.toString(),
+            picture: chat.picture,
         }
     },
 })

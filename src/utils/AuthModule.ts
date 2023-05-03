@@ -9,7 +9,7 @@ export const generateAuthTokens = async (user: IUser) => {
     try {
         const accessTokenExp = addDaysToDate(new Date(), 1)
         const refreshTokenExp = addDaysToDate(new Date(), 365)
-        const accessToken = jwt.sign({ _id: user._id, role: user.role }, envs.secret, { expiresIn: '1min' })
+        const accessToken = jwt.sign({ _id: user._id, role: user.role }, envs.secret, { expiresIn: '1d' })
         const refreshToken = jwt.sign({ _id: user._id, role: user.role }, envs.secret, { expiresIn: '365d' })
         return {
             data: {

@@ -5,4 +5,6 @@ export interface ChatClient extends BaseModelClient {
     name: string
     users: string[]
     isGroup: boolean
+    owner: string
+    picture?: string
 }

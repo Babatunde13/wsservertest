@@ -1,4 +1,4 @@
-import { UserClient } from 'src/models/user.model.client'
+import { UserClient } from '../models/user.model.client'
 import { ApiError } from '../utils/ApiError'
 import { BaseReq, BaseRes } from './base_req.ctrl.contract'
 

@@ -1,6 +1,6 @@
 import { IOSocket } from '../types/ws.types'
 import { onLogin, onLogout } from '../controllers/chat.controller'
-import { ApiError } from 'src/utils/ApiError'
+import { ApiError } from '../utils/ApiError'
 
 export default function userHandler (socket: IOSocket) {
     const user = socket.request.user

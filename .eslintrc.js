@@ -7,7 +7,8 @@ module.exports = {
     },
     'extends': [
         'eslint:recommended',
-        'plugin:@typescript-eslint/recommended'
+        'plugin:@typescript-eslint/recommended',
+        'plugin:import/recommended',
     ],
     'parser': '@typescript-eslint/parser',
     'parserOptions': {
@@ -22,6 +23,7 @@ module.exports = {
         semi: ['error', 'never'],
         indent: ['error', 4],
         '@typescript-eslint/no-empty-interface': 'off',
-        '@typescript-eslint/ban-types': 'off'
+        '@typescript-eslint/ban-types': 'off',
+        'import/no-unresolved': 'off',
     },
 }

@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto'
 import { Server } from 'http'
 import io from 'socket.io'
-import userHandler from './wsHandlers/user.handler'
+import userHandler from 'src/wsHandlers/user.handler'
 import chatHandler from './wsHandlers/chat.handler'
 import { IOSocket, IEventPayload } from './types/ws.types'
 import { ApiError } from './utils/ApiError'
