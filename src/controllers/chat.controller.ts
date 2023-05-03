@@ -2,7 +2,7 @@ import messageModel from '../models/message.model.server'
 import chatModel from '../models/chat.model.server'
 import { IOSocket } from '../types/ws.types'
 import { ApiError } from '../utils/ApiError'
-import { DeleteMessagePayload, FetchMessagesPayload, SendMessagePayload, UpdateMessagePayload } from '../contracts/send_message.ctrl.contract'
+import { DeleteMessagePayload, FetchMessagesPayload, ReadMessagePayload, SendMessagePayload, UpdateMessagePayload } from '../contracts/chats.ctrl.contract'
 
 export const sendMessage = async (socket: IOSocket, payload: SendMessagePayload) => {
     const user = socket.request.user
@@ -69,10 +69,6 @@ export const fetchMessages = async (socket: IOSocket, payload: FetchMessagesPayl
 
 export const onLogin = async (socket: IOSocket) => {
     const user = socket.request.user
-    if(!user) {
-        socket.emit('error', new ApiError('User not found'))
-        return
-    }
     const userChatResult = await  chatModel.find({ users: { $in: [user._id] }})
     if(userChatResult.error || !userChatResult.data) {
         socket.to(user._id).emit('error', userChatResult.error || new ApiError('Error fetching user chats'))
@@ -86,10 +82,6 @@ export const onLogin = async (socket: IOSocket) => {
 
 export const onLogout = async (socket: IOSocket) => {
     const user = socket.request.user
-    if(!user) {
-        socket.emit('error', new ApiError('User not found'))
-        return
-    }
     const userChatResult = await  chatModel.find({ users: { $in: [user._id] }})
     if(userChatResult.error || !userChatResult.data) {
         socket.to(user._id).emit('error', userChatResult.error || new ApiError('Error fetching user chats'))
@@ -106,4 +98,30 @@ export const onLogout = async (socket: IOSocket) => {
     userChatChannels.forEach((channel) => {
         socket.leave(channel)
     })
+}
+
+export const readMessage = async (socket: IOSocket, payload: ReadMessagePayload) => {
+    const message = await messageModel.findOne({ _id: payload.messageId, chat: payload.chat })
+    if(message.error || !message.data) {
+        socket.emit('error', message.error || new ApiError('Message not found'))
+        return
+    }
+
+    const channel = `chat:${message.data.chat.toString()}`
+    socket.to(channel).emit('message:read', payload)
+
+    await messageModel.updateOne({ _id: payload.messageId, chat: payload.chat }, { $set: { status: 'read' } })
+}
+
+export const deliverMessage = async (socket: IOSocket, payload: ReadMessagePayload) => {
+    const message = await messageModel.findOne({ _id: payload.messageId, chat: payload.chat })
+    if(message.error || !message.data) {
+        socket.emit('error', message.error || new ApiError('Message not found'))
+        return
+    }
+
+    const channel = `chat:${message.data.chat.toString()}`
+    socket.to(channel).emit('message:delivered', payload)
+    
+    await messageModel.updateOne({ _id: payload.messageId, chat: payload.chat }, { $set: { status: 'delivered' } })
 }

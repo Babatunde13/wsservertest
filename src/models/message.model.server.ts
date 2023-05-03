@@ -20,7 +20,12 @@ const messageModel = new BaseModel<IMessage, MessageClient>({
             ref: 'User'
         },
         hasMedia: Boolean,
-        media: [String]
+        media: [String],
+        status: {
+            type: String,
+            enum: ['sent', 'delivered', 'read'],
+            default: 'sent'
+        }
     },
     toJSON(message) {
         return {
@@ -30,7 +35,8 @@ const messageModel = new BaseModel<IMessage, MessageClient>({
             sender: message.sender.toString(),
             receiver: message.receiver.toString(),
             hasMedia: message.hasMedia,
-            media: message.media,            
+            media: message.media,
+            status: message.status,
         }
     },
 })

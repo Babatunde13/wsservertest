@@ -8,4 +8,5 @@ export interface MessageClient extends BaseModelClient {
     text: string
     hasMedia: boolean
     media: string[]
+    status: 'sent' | 'delivered' | 'read'
 }
