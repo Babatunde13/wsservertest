@@ -121,8 +121,27 @@ export const onLogin = async (socket: IOSocket) => {
         return
     }
 
+    // update all personal message sent chats to delivered
+    const resp = await messageModel.updateMany(
+        {
+            chat: { $in: userChatResult.data.map((chat) => chat._id) },
+            sender: { $ne: user._id },
+            status: 'sent'
+        },
+        { $set: { status: 'delivered' } },
+    )
+
+    if (resp.error || !resp.data) {
+        socket.emit('error', { message: 'Error updating messages', code: 500 })
+        return
+    }
+
     const userChats = userChatResult.data
     const userChatChannels = userChats.map((chat) => `chat:${chat._id.toString()}`)
+    for (const chat of userChats) {
+        const channel = `chat:${chat._id.toString()}`
+        socket.to(channel).emit('message:delivered', { channel, user })
+    }
     socket.join(userChatChannels)
 }
 
