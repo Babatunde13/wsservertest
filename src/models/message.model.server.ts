@@ -15,10 +15,6 @@ const messageModel = new BaseModel<IMessage, MessageClient>({
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
-        receiver: {
-            type: Schema.Types.ObjectId,
-            ref: 'User'
-        },
         hasMedia: Boolean,
         media: [String],
         status: {
@@ -33,7 +29,6 @@ const messageModel = new BaseModel<IMessage, MessageClient>({
             text: message.text,
             chat: message.chat.toString(),
             sender: message.sender.toString(),
-            receiver: message.receiver.toString(),
             hasMedia: message.hasMedia,
             media: message.media,
             status: message.status,

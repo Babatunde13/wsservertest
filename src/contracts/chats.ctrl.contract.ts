@@ -2,7 +2,6 @@ import { IEventPayload } from '../types/ws.types'
 
 interface SendMessage {
     chat: string
-    receiver: string
     text: string
     hasMedia: boolean
     media: string[]

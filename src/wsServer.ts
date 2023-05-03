@@ -1,14 +1,18 @@
 import { randomUUID } from 'crypto'
 import { Server } from 'http'
 import io from 'socket.io'
-import userHandler from 'src/wsHandlers/user.handler'
+import userHandler from './wsHandlers/user.handler'
 import chatHandler from './wsHandlers/chat.handler'
 import { IOSocket, IEventPayload } from './types/ws.types'
 import { ApiError } from './utils/ApiError'
 import { verifyAuthTokens } from './utils/AuthModule'
+import envs from './envs'
 
 const getUserFromToken = async (socket: IOSocket) => {
     const token = socket.handshake.auth.token || socket.handshake.headers.authorization?.split(' ')[1]
+    if (!token) {
+        return { error: new ApiError('Unauthorized') }
+    }
     const userData = await verifyAuthTokens(token)
     if (!userData.data || userData.error) {
         return { error: userData.error || new ApiError('Error fetching user data') }
@@ -31,7 +35,8 @@ const authUserMiddleware = async (socket: io.Socket, next: (err?: ApiError) => v
 const wsConnection = (socket: IOSocket) => {
     const id = socket.id
     console.log('Client connected: ', id)
-    socket.join(socket.request.user._id)
+    const user = socket.request.user
+    socket.join(user._id.toString())
 
     socket.on('disconnect', (reason: string) => {
         console.log('disconnect', socket.connected, socket.id)
@@ -44,16 +49,17 @@ const wsConnection = (socket: IOSocket) => {
 
     socket.on('join:channel', (payload: IEventPayload<{ channel: string }>) => {
         const channel = payload.channel
+        console.log('join:channel', channel)
         // save channel to db for user
         socket.join(channel)
-        socket.to(channel).emit('user:joined', { channel, user: socket.request.user })
+        socket.to(channel).emit('user:joined', { channel, user: user })
     })
 
     socket.on('leave:channel', (payload: IEventPayload<{ channel: string }>) => {
         const channel = payload.channel
         // remove channel from db for user
         socket.leave(channel)
-        socket.to(channel).emit('user:left', { channel, user: socket.request.user })
+        socket.to(channel).emit('user:left', { channel, user: user })
     })
 
     userHandler(socket) 
@@ -64,13 +70,15 @@ const createWebSocketServer = (server: Server) => {
     const wss = new io.Server(server, {
         allowRequest: (req, callback) => {
             const origin = req.headers.origin
-            callback(null, origin === process.env.FRONTEND_URL)
+            callback(null, origin !== envs.FRONTEND_URL)
         }
     })
     wss.engine.generateId = () => randomUUID()
     wss.use(authUserMiddleware)
 
-    wss.on('connection', (sock: any) => wsConnection(sock))
+    wss.on('connection', (socket: any) => wsConnection(socket))
+
+    return wss
 }
 
 export default createWebSocketServer
