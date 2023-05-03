@@ -87,6 +87,31 @@ export class BaseModel<T extends ModelAPI<{}>, ModelClient> {
         )
     }
 
+    async createAndStartSession(): Promise<ClientSession> {
+        const session = await this.model.db.startSession()
+        session.startTransaction()
+        return session
+    }
+
+    async createSession(): Promise<ClientSession> {
+        const session = await this.model.db.startSession()
+        return session
+    }
+
+    async startSession(session: ClientSession): Promise<void> {
+        session.startTransaction()
+    }
+
+    async commitSession(session: ClientSession): Promise<void> {
+        await session.commitTransaction()
+        await session.endSession()
+    }
+
+    async abortSession(session: ClientSession): Promise<void> {
+        await session.abortTransaction()
+        await session.endSession()
+    }
+
     async create(data: Partial<T>): Promise<DataOrError<T>> {
         try {
             const doc = new this.model(data)
