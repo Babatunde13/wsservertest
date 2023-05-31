@@ -2,7 +2,7 @@ import { config } from 'dotenv'
 
 config()
 
-interface ISchema {
+interface EnvSchema {
     [key: string]: {
         required: boolean,
         type: 'string' | 'number' | 'object',
@@ -10,7 +10,7 @@ interface ISchema {
     }
 }
 
-interface IEnv {
+interface Env {
     [key: string]: string | number | object | undefined
 }
 
@@ -21,7 +21,7 @@ const envs = {
     secret: process.env.SECRET || ''
 }
 
-const schema: ISchema = {
+const schema: EnvSchema = {
     PORT: {
         required: true,
         type: 'number',
@@ -44,8 +44,8 @@ const schema: ISchema = {
 
 
 const validateEnvs = (
-    schema: ISchema,
-    envs: IEnv
+    schema: EnvSchema,
+    envs: Env
 ) => {
     const missingEnvs = Object.entries(schema).filter(([key, value]) => {
         if (typeof value.default !== 'undefined') {
